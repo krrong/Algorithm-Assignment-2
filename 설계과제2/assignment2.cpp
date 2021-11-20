@@ -3,10 +3,10 @@
 using namespace std;
 
 int n, m, q;
-vector<int> order;		// 순서
-int answer;				// 총 비용
+vector<int> order;						// 순서
+long long answer;						// 총 비용
+bool visit[100001];						// 방문했는지 체크
 vector<pair<int, int>> graph[100001];	// index는 시작지점, pair<조형물 번호, 비용> 저장
-bool visit[100001];					// 방문했는지 체크
 
 // 최소 힙 -> fringe set에서 최소 간선을 구하기 위함
 class MinHeap {
@@ -47,20 +47,20 @@ void prim(int start) {
 
 	// fringe가 비어있지 않을동안 반복
 	while (!fringe.isEmpty()) {
-		int node = fringe.top().first;		// 가장 저렴한 정점의 번호
-		int price = fringe.top().second;	// 가장 저렴한 정점
+		int node1 = fringe.top().first;		// 가장 저렴한 정점의 번호
+		int price1 = fringe.top().second;	// 가장 저렴한 정점
 		fringe.pop();						// top원소 삭제
 
 		// 이전에 선택이 안되어 있었다면
-		if (visit[node] == false) {
-			visit[node] = true;				// 선택 표시
-			answer = answer + price;			// 총 비용 갱신
-			order.push_back(node);				// 순서대로 삽입
+		if (visit[node1] == false) {
+			visit[node1] = true;				// 선택 표시
+			answer = answer + price1;			// 총 비용 갱신
+			order.push_back(node1);				// 순서대로 삽입
 
-			// 지금 선택한 조형물과 연결된 다리를 fringe set에 추가
-			for (int i = 0; i < graph[node].size(); i++) {
-				int node2 = graph[node][i].first;		// 지금 선택한 조형물과 연결된 조형물의 번호
-				int price2 = graph[node][i].second;		// 지금 선택한 조형물과의 산책로 비용
+			// 지금 선택한 조형물과 연결된 산책로를 fringe set에 추가
+			for (int i = 0; i < graph[node1].size(); i++) {
+				int node2 = graph[node1][i].first;			// 지금 선택한 조형물과 연결된 조형물의 번호
+				int price2 = graph[node1][i].second;		// 지금 선택한 조형물과의 산책로 비용
 
 				// 이전에 선택이 되지 않았을 경우만 fringe set에 추가함
 				if (visit[node2] == false) {
@@ -102,13 +102,19 @@ int main() {
 		string str;
 		int start;
 		cin >> str >> start;
+
+		// 프림 알고리즘
 		prim(start);
 
-		cout << answer << ' ';
+		cout << answer << ' ';		// 최소 비용 출력
+
+		// 순서 출력
 		for (int i = 0; i < order.size(); i++) {
 			cout << order[i] << ' ';
 		}
 		cout << '\n';
+
+		// 초기화
 		reset();
 	}
 
@@ -150,21 +156,74 @@ void MinHeap::downheap(int idx) {
 
 	// 양쪽 자식 모두 값이 있을 때
 	if (right <= heap_size) {
-		// 왼쪽 자식의 값이 더 작고
-		if (v[left].second <= v[right].second) {
-			// 부모가 더 크면
+		// 1. 왼쪽 자식의 값이 더 작을 경우
+		if (v[left].second < v[right].second) {
+			// 부모의 비용이 더 크면
 			if (v[left].second < v[idx].second) {
 				swap(left, idx);	// 바꿔주고
 				downheap(left);		// 왼쪽 자식에서 다시 downheap
 			}
+			// 비용이 같으면
+			else if (v[left].second == v[idx].second) {
+				// 부모의 번호가 더 클 때 
+				if (v[left].first < v[idx].first) {
+					swap(left, idx);	// 바꿔주고
+					downheap(left);		// 왼쪽 자식에서 다시 downheap
+				}
+			}
 			else return;
 		}
-		// 오른쪽 자식의 값이 더 작고
+		// 2. 왼쪽 오른쪽 비용이 같을 경우
+		else if (v[left].second == v[right].second) {
+			// 왼쪽의 번호가 더 크면 오른쪽과 부모를 비교
+			if (v[left].first > v[right].first) {
+				// 부모의 비용이 더 클 경우
+				if (v[right].second < v[idx].second) {
+					swap(right, idx);	// 바꿔주고
+					downheap(right);	// 오른쪽 자식에서 다시 downheap
+				}
+				// 부모와 같으면
+				else if (v[right].second == v[idx].second) {
+					// 부모의 번호가 더 크면
+					if (v[right].first < v[idx].first) {
+						swap(right, idx);	// 바꿔주고
+						downheap(right);	// 오른쪽 자식에서 다시 downheap
+					}
+				}
+				else return;
+			}
+			// 오른쪽의 번호가 더 크면 왼쪽과 부모를 비교
+			else {
+				// 부모의 비용이 더 클 경우
+				if (v[left].second < v[idx].second) {
+					swap(left, idx);	// 바꿔주고
+					downheap(left);		// 왼쪽 자식에서 다시 downheap
+				}
+				// 부모와 같으면
+				else if (v[left].second == v[idx].second) {
+					// 부모의 번호가 더 크면
+					if (v[left].first < v[idx].first) {
+						swap(left, idx);	// 바꿔주고
+						downheap(left);		// 왼쪽 자식에서 다시 downheap
+					}
+				}
+				else return;
+			}
+		}
+		// 3. 오른쪽 자식의 값이 더 클 경우
 		else {
 			// 부모가 더 크면
 			if (v[right].second < v[idx].second) {
 				swap(right, idx);	// 바꿔주고
 				downheap(right);	// 오른쪽 자식에서 다시 downheap
+			}
+			// 부모와 같으면
+			else if (v[right].second == v[idx].second) {
+				// 부모의 번호가 더 크면
+				if (v[right].first < v[idx].first) {
+					swap(right, idx);	// 바꿔주고
+					downheap(right);	// 오른쪽 자식에서 다시 downheap
+				}
 			}
 			else return;
 		}
@@ -175,6 +234,14 @@ void MinHeap::downheap(int idx) {
 		if (v[left].second < v[idx].second) {
 			swap(left, idx);	// 바꿔주고
 			downheap(left);		// 왼쪽 자식에서 다시 downheap
+		}
+		// 가격이 같은데
+		else if (v[left].second == v[idx].second) {
+			// 부모의 번호가 더 크면
+			if (v[left].first < v[idx].first) {
+				swap(left, idx);	// 바꿔주고
+				downheap(left);		// 왼쪽 자식에서 다시 downheap
+			}
 		}
 		else return;
 	}
