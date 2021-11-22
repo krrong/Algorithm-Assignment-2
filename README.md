@@ -194,14 +194,14 @@ index는 시작점이고 vector가 담고 있는 정보는 시작점과 이어�
 
 ##### 6) isEmpty
 
-- ![image-20211120192810888](C:\Users\seokjinkang\AppData\Roaming\Typora\typora-user-images\image-20211120192810888.png)	
+- ![image](https://user-images.githubusercontent.com/84285337/142817743-b7be85c6-9456-4110-b812-b260924cc49a.png)		
 - MinHeap이 비어있는지를 bool 타입으로 리턴해준다.
 
 
 
 ##### 7) top
 
-- ![image-20211120192836346](C:\Users\seokjinkang\AppData\Roaming\Typora\typora-user-images\image-20211120192836346.png)	
+- ![image](https://user-images.githubusercontent.com/84285337/142817787-de163979-1311-4400-a519-ca4edf63b964.png)		
 - MinHeap의 top에 있는 원소를 pair객체로 리턴해준다.
 
 
