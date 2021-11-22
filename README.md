@@ -162,7 +162,7 @@ index는 시작점이고 vector가 담고 있는 정보는 시작점과 이어�
 
 ##### 2) insert
 
-- ![image-20211120192231194](C:\Users\seokjinkang\AppData\Roaming\Typora\typora-user-images\image-20211120192231194.png)	
+- ![image](https://user-images.githubusercontent.com/84285337/142817881-ce47a2be-1d19-482a-ad14-baaf41bebcf5.png)		
 
 - 외부에서 정점의 번호와 가격을 입력 받으면 pair로 만들어 MinHeap에 추가한다.
 
